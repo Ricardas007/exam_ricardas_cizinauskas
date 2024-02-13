@@ -2,16 +2,10 @@ package lt.techin.exam.ricardas.cizinausas;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-
-import java.time.Duration;
 
 public class PrestaShopPage extends BasePage {
     public PrestaShopPage(WebDriver driver) {
         super(driver);
-
     }
     @FindBy(css = ".products.row > div:nth-of-type(1) > .js-product-miniature.product-miniature h3 > a")
     WebElement getProductFirstName;
@@ -49,6 +43,17 @@ public class PrestaShopPage extends BasePage {
     @FindBy(css = "h4")
     WebElement addToCartProductInShoppingCart;
 
+    @FindBy(css = ".cart-content-btn .btn-primary")
+    WebElement clickOnProceedToCheckoutButton;
+
+    @FindBy(css = "[data-id_customization]")
+    WebElement isCorrectItemNameIsInShoppingCart;
+
+    @FindBy(css = ".cart-items .value")
+    WebElement isCorrectItemSizeInShoppingCart;
+
+    @FindBy(css = ".discount.discount-percentage")
+    WebElement itemDiscountPersentage;
 
     public String getProductNameOne(){
         String nameText = getProductFirstName.getText();
@@ -74,23 +79,43 @@ public class PrestaShopPage extends BasePage {
         return name;
     }
 
-
-    public void firstItemClickCansel() {
+    public void itemClickCansel() {
         firstItemClickCansel.click();
     }
 
-    public void selectItemSize() {
+    public void selectFirstItemSize() {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].value='4'", sizeDropDown);
         addToCart.click();
     }
+
+    public void selectSecondItemSize() {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].value='2'", sizeDropDown);
+        addToCart.click();
+    }
+
     public String selectProductItemMessageAddedToCart(){
-//        Wait<WebDriver> wait1 = new FluentWait<>(driver)
-//                .withTimeout(Duration.ofSeconds(5))
-//                .pollingEvery(Duration.ofSeconds(1))
-//                .ignoring(NoSuchElementException.class);
-//        WebElement landscaoe = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("#myModalLabel")));
-        String landscaoe = addToCartProductInShoppingCart.getText();
-        return landscaoe;
+        String message = addToCartProductInShoppingCart.getText();
+        return message;
+    }
+
+    public void clickToProceedToCheckout() {
+        clickOnProceedToCheckoutButton.click();
+    }
+
+    public String checkItemName() {
+        String itemName = isCorrectItemNameIsInShoppingCart.getText();
+        return itemName;
+    }
+    public String checkItemSize() {
+        String itemSize = isCorrectItemSizeInShoppingCart.getText();
+        return itemSize;
+    }
+
+
+    public String countItemDiscountPrice() {
+       String itemDicountPersentage = itemDiscountPersentage.getText();
+       return itemDicountPersentage;
     }
 }

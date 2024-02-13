@@ -4,8 +4,6 @@ import jdk.jfr.Description;
 import lt.techin.exam.ricardas.cizinausas.PrestaShopPage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 
 public class PrestaShopTest extends BaseTest{
@@ -49,14 +47,65 @@ public class PrestaShopTest extends BaseTest{
         Assertions.assertEquals(webMessage,actual,"If you not Signed in following message will appear: You need to be logged in to save products in your wishlist");
     }
     @Test
-    @Description("First product.Press cencel and select size and click add to cart")
+    @Description("First product.Press cancel and select size and click add to cart")
     void addToCartProductOne() throws InterruptedException {
-        PrestaShopPage prstaShop = new PrestaShopPage(driver);
-        prstaShop.firstItemTowhishlist();
-        prstaShop.firstItemClickCansel();
-        prstaShop.selectItemSize();
+        PrestaShopPage prestaShop = new PrestaShopPage(driver);
+        prestaShop.firstItemTowhishlist();
+        prestaShop.itemClickCansel();
+        prestaShop.selectFirstItemSize();
         Thread.sleep(5000);
-        String webElement = String.valueOf(prstaShop.selectProductItemMessageAddedToCart()).substring(1).trim();
+        String webElement = String.valueOf(prestaShop.selectProductItemMessageAddedToCart()).substring(1).trim();
         Assertions.assertEquals("Product successfully added to your shopping cart",webElement);
     }
+
+    @Test
+    @Description("Second product. Press cansel select size and click add to cart")
+    void addToCartProductTwo() throws InterruptedException {
+        PrestaShopPage prestaShop = new PrestaShopPage(driver);
+        prestaShop.secondItemToWhislist();
+        prestaShop.itemClickCansel();
+        prestaShop.selectSecondItemSize();
+        Thread.sleep(5000);
+        String webElement = String.valueOf(prestaShop.selectProductItemMessageAddedToCart().substring(1)).trim();
+        Assertions.assertEquals("Product successfully added to your shopping cart",webElement);
+    }
+
+    @Test
+    @Description("Fist product. Proceed to checkout, check if correct item, size and discount in shopping cart")
+    void proceedFirstItemToCheckOut() throws InterruptedException {
+        PrestaShopPage prestaShop = new PrestaShopPage(driver);
+        String expectedProductName = ("Hummingbird printed t-shirt").toLowerCase();
+        String expectedProductSize = ("XL").toLowerCase();
+        String expectedDicount = "20";
+        prestaShop.firstItemTowhishlist();
+        prestaShop.itemClickCansel();
+        prestaShop.selectFirstItemSize();
+        prestaShop.clickToProceedToCheckout();
+        Thread.sleep(5000);
+        String itemName = prestaShop.checkItemName().toLowerCase();
+        Assertions.assertEquals(expectedProductName,itemName,"Product name must match product from the list");
+        String itemSize = prestaShop.checkItemSize().toLowerCase();
+        Assertions.assertEquals(expectedProductSize,itemSize,"Producr size must match product from the list");
+        prestaShop.countItemDiscountPrice();
+        String itemPercentageDiscount = prestaShop.countItemDiscountPrice().substring(1,3).trim();
+        Assertions.assertEquals(expectedDicount,itemPercentageDiscount,"Poduct discount must match discount form the list");
+    }
+
+    //Not working this test correctly not read name, size, discount.
+    @Test
+    @Description("Fist product. Proceed to checkout, check if correct item, size and discount in shopping cart")
+    void proceedSecondItemToCheckOut() throws InterruptedException {
+        PrestaShopPage prestaShop = new PrestaShopPage(driver);
+        String expectedProductName = ("HUMMINGBIRD PRINTED SWEATER").toLowerCase();
+        String expectedProductSize = ("M").toLowerCase();
+        String expectedDicount = "20";
+        prestaShop.secondItemToWhislist();
+        prestaShop.itemClickCansel();
+        prestaShop.selectSecondItemSize();
+        Thread.sleep(5000);
+        String itemName = prestaShop.checkItemName().toLowerCase();
+        System.out.println(itemName);
+
+    }
+
 }
